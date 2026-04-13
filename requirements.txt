@@ -17,4 +17,3 @@ onnx
 python-dotenv
 pre-commit
 black
-

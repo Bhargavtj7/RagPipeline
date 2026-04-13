@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-# Load env variables
 load_dotenv()
 
 

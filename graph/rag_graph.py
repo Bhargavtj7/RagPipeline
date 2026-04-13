@@ -1,11 +1,12 @@
 from langgraph.graph import END, StateGraph
 
 from graph.state import GraphState
-from nodes.answer_node import AnswerNode
-from nodes.general_node import GeneralNode
+from nodes.agent_node import AgentNode
 from nodes.reranker_node import RerankerNode
-from nodes.retriever_node import RetrieverNode
-from nodes.router_node import RouterNode
+from nodes.tool_node import ToolNode
+from tools.general_tool import GeneralTool
+from tools.rag_tool import RAGTool
+from tools.rewrite_tool import RewriteTool
 
 
 class RAGGraph:
@@ -16,35 +17,45 @@ class RAGGraph:
     def build(self):
         graph = StateGraph(GraphState)
 
-        # Nodes
-        router = RouterNode(self.llm)
-        general = GeneralNode(self.llm)
-        retriever = RetrieverNode(self.retriever)
-        reranker = RerankerNode(top_k=3)  # ✅ NEW
-        answer = AnswerNode(self.llm)
+        # =========================
+        # Initialize Nodes
+        # =========================
+        agent = AgentNode(self.llm)
 
-        graph.add_node("router", router)
-        graph.add_node("general", general)
-        graph.add_node("retriever", retriever)
-        graph.add_node("reranker", reranker)  # ✅ NEW
-        graph.add_node("answer", answer)
+        tools = {
+            "general": GeneralTool(self.llm),
+            "rag": RAGTool(self.retriever, RerankerNode(top_k=3), self.llm),
+            "rewrite": RewriteTool(self.llm),
+        }
 
-        # Entry
-        graph.set_entry_point("router")
+        tool_node = ToolNode(tools)
 
-        # Router logic
+        # =========================
+        # Add Nodes to Graph
+        # =========================
+        graph.add_node("agent", agent)
+        graph.add_node("tool", tool_node)
+
+        # =========================
+        # Entry Point
+        # =========================
+        graph.set_entry_point("agent")
+
+        # =========================
+        # Flow: Agent → Tool
+        # =========================
+        graph.add_edge("agent", "tool")
+
+        # =========================
+        # Conditional Flow
+        # =========================
         graph.add_conditional_edges(
-            "router",
-            lambda state: "general" if state["is_general"] else "rag",
-            {"general": "general", "rag": "retriever"},
+            "tool",
+            lambda state: "agent" if state["tool"] == "rewrite" else "end",
+            {
+                "agent": "agent",  # loop back after rewrite
+                "end": END,  # finish after general/rag
+            },
         )
-
-        # ✅ Updated flow (NO validator)
-        graph.add_edge("retriever", "reranker")
-        graph.add_edge("reranker", "answer")
-
-        # End nodes
-        graph.add_edge("general", END)
-        graph.add_edge("answer", END)
 
         return graph.compile()

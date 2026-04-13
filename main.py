@@ -30,7 +30,6 @@ def main():
     html_docs = [
         doc for doc in docs if doc.metadata.get("source", "").endswith(".html")
     ]
-
     # =========================
     # 3. Split documents
     # =========================
