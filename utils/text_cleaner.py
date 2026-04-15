@@ -2,6 +2,7 @@ import re
 
 
 def clean_text(text: str) -> str:
+    """Clean text by removing unwanted patterns."""
     # Remove image markdown
     text = re.sub(r"!\[.*?\]\(.*?\)", "", text)
 

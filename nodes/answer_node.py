@@ -1,4 +1,6 @@
 class AnswerNode:
+    """Node that generates answers using LLM and context."""
+
     def __init__(self, llm):
         self.llm = llm
 
@@ -6,15 +8,13 @@ class AnswerNode:
         query = state["query"]
         context = state["context"]
 
-        prompt = f"""
-        Answer the question using ONLY the context.
-
-        Context:
-        {context}
-
-        Question:
-        {query}
-        """
+        prompt = (
+            "Answer the question using ONLY the context.\n"
+            "\n"
+            f"Context:\n{context}\n"
+            "\n"
+            f"Question:\n{query}"
+        )
 
         state["answer"] = self.llm.invoke(prompt)
         return state

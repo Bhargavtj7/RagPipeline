@@ -11,6 +11,8 @@ logger = get_logger(__name__)
 
 
 class DocumentParser:
+    """Main document parser that handles multiple file formats."""
+
     def __init__(self):
         self.parsers = {
             "pdf": PDFParser(),
@@ -25,6 +27,7 @@ class DocumentParser:
         )
 
     def parse_directory(self, directory_path):
+        """Parse all supported documents in a directory."""
         all_docs = []
 
         for file in Path(directory_path).rglob("*"):
@@ -47,7 +50,7 @@ class DocumentParser:
                             file,
                         )
 
-                except Exception as e:
+                except Exception as e:  # pylint: disable=broad-except
                     logger.error("Error processing %s: %s", file, e)
 
         logger.info("Total parsed docs: %d", len(all_docs))

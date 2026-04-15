@@ -7,6 +7,8 @@ load_dotenv()
 
 
 class GroqLLM:
+    """Wrapper for Groq LLM API."""
+
     def __init__(self):
         self.llm = ChatGroq(
             api_key=os.getenv("GROQ_API_KEY"),
@@ -15,4 +17,5 @@ class GroqLLM:
         )
 
     def invoke(self, prompt):
+        """Invoke the LLM with a prompt."""
         return self.llm.invoke(prompt).content

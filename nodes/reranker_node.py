@@ -5,6 +5,8 @@ MODEL_NAME = "BAAI/bge-reranker-base"
 
 
 class RerankerNode:
+    """Node that reranks retrieved documents using a cross-encoder model."""
+
     def __init__(self, top_k=3):
         # BAAI reranker model
         self.model = CrossEncoder(MODEL_NAME)

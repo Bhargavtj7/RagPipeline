@@ -6,6 +6,7 @@ def create_vector_store(
     embeddings,
     collection_name="default_collection",
 ):
+    """Create a Chroma vector store from documents."""
     vectorstore = Chroma.from_documents(
         documents=documents,
         embedding=embeddings,

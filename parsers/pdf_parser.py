@@ -7,10 +7,13 @@ from .base_parser import BaseParser
 
 
 class PDFParser(BaseParser):
+    """Parser for PDF files using Marker library."""
+
     def __init__(self):
         self.converter = PdfConverter(artifact_dict=create_model_dict())
 
     def parse(self, file_path):
+        """Parse PDF file and extract text."""
         try:
             rendered = self.converter(file_path)
             text, _, _ = text_from_rendered(rendered)
@@ -25,5 +28,5 @@ class PDFParser(BaseParser):
                 )
             ]
 
-        except Exception as e:
-            raise ValueError(f"Error parsing PDF: {e}")
+        except Exception as e:  # pylint: disable=broad-except
+            raise ValueError(f"Error parsing PDF: {e}") from e

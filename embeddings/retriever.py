@@ -4,6 +4,7 @@ from embeddings.hf_embeddings import get_embeddings
 
 
 def get_retriever(collection_name="documents", k=5):
+    """Get retriever for a specific collection."""
     embeddings = get_embeddings()
     db = Chroma(
         collection_name=collection_name,

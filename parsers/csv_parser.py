@@ -5,7 +5,10 @@ from .base_parser import BaseParser
 
 
 class CSVParser(BaseParser):
+    """Parser for CSV files."""
+
     def parse(self, file_path):
+        """Parse CSV file and convert rows to documents."""
         df = pd.read_csv(file_path)
 
         docs = []
@@ -13,7 +16,11 @@ class CSVParser(BaseParser):
             docs.append(
                 Document(
                     page_content=str(row.to_dict()),
-                    metadata={"source": file_path, "row": i, "type": "csv"},
+                    metadata={
+                        "source": file_path,
+                        "row": i,
+                        "type": "csv",
+                    },
                 )
             )
 

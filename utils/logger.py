@@ -2,6 +2,7 @@ import logging
 
 
 def get_logger(name: str):
+    """Get or create a logger with the given name."""
     logger = logging.getLogger(name)
 
     if not logger.handlers:  # avoid duplicate logs

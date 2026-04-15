@@ -1,4 +1,6 @@
 class RetrieverNode:
+    """Node that retrieves relevant documents from the vector store."""
+
     def __init__(self, retriever):
         self.retriever = retriever
 
